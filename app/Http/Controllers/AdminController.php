@@ -14,8 +14,15 @@ class AdminController extends Controller
      */
     public function index()
     {
-    	return view('admin.index');
+     	return view('admin.index');
     }
+   public function session(Request $request){
+   if($request->session()->has('username')) {//判断username存在不存在
+     $request->session()->forget('username');//清除session
+     $request->session()->flush();
+	 
+    }
+   }
 
 
 }

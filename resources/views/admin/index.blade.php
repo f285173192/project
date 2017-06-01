@@ -1,4 +1,4 @@
-
+{{Session::get('username')}}；
 <!DOCTYPE html>
 <!--[if lt IE 7]> <html class="lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="lt-ie9 lt-ie8" lang="en"> <![endif]-->
@@ -57,8 +57,8 @@
         
         	<!-- Notifications -->
         	<div id="mws-user-notif" class="mws-dropdown-menu">
-            	<a href="#" data-toggle="dropdown" class="mws-dropdown-trigger"><i class="icon-exclamation-sign"></i></a>
-                
+            	<a href="/loginout">退出登录</a>
+                <a href="#" data-toggle="dropdown" class="mws-dropdown-trigger"><i class="icon-exclamation-sign"></i></a>
                 <!-- Unread notification count -->
                 <span class="mws-dropdown-notif">35</span>
                 

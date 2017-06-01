@@ -16,8 +16,17 @@ Route::get('/', function () {
 });
 
 //后台路由规则
-Route::get('/admin', 'AdminController@index');
+Route::get('/admin', 'LoginController@index')->middleWare('Login');//中间件控制session不存在则转向登录页
+//后台登录
+Route::post('/Loginon','LoginController@loginon');
 
+//后台首页
+Route::get('/admin/index','AdminController@index')->middleWare('Login');
+
+//退出登录
+Route::get('/loginout','LoginController@loginout');
+
+Route::get('/Login/index','LoginController@index');
 //用户管理
 Route::get('/user/add', 'UserController@add');
 Route::post('/user/insert', 'UserController@insert');
@@ -36,6 +45,10 @@ Route::resource('tag', 'TagController');
 
 //文章管理
 Route::resource('article', 'ArticleController');
+
+
+
+Route::get('/session','AdminController@session');//session练习	
 
 
 
