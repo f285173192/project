@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\User;
 use Hash;
+use Session;
 
 class UserController extends Controller
 {
@@ -29,36 +30,46 @@ class UserController extends Controller
             'username' => 'required|regex:/\w{8,20}/',
             'email' => 'required|email',
             'password' => 'same:repassword'
-        ],[
+         ],[
             'username.required' => '用户名不能省略',
             'username.regex'=>'用户名规则不正确 请填写8~20位字母数字下划线',
             'email.required' => '邮箱不能为空',
             'email.email'=>'邮箱格式不正确',
             'password.same' => '两次密码不一致'
-        ]);
+         ]);
 
         //数据的插入
-        $user = new User;
+        $user = new User;//实例化用户模型
         $user -> username = $request->input('username');
         $user -> email = $request->input('email');
-        $user -> password = Hash::make($request->input('password'));
+        $user -> password = Hash::make($request->input('password'));//对密码加密，hash生成随机的一个加密字符串
         $user -> intro = $request->input('intro');
         //随机字符串标识
         $user -> remember_token = str_random(50);
         //处理图片上传
-        if ($request->hasFile('profile')) {
-            //文件的存放目录
+
+        //由session写入闪存
+        Session::flash('username', $user -> username);
+        Session::flash('email', $user -> email);        
+        if ($request->hasFile('profile')) {//检查表单提交的时候是否有文件
+            //文件的存放目录 ./代表当前， / 在linux系统下是服务器更目录，在windows系统中是某盘的根目录
             $path = './Uploads/'.date('Ymd');
             //获取后缀
             $suffix = $request->file('profile')->getClientOriginalExtension();
-            //文件的名称
-            $fileName = time().rand(100000, 999999).'.'.$suffix;
-            $request->file('profile')->move($path, $fileName);
-            $user -> profile = trim($path.'/'.$fileName,'.');
+            
+            $suffixarr=['jpg','png','jpeg','gif'];
+            if(in_array($suffix, $suffixarr)){
+                $fileName = time().rand(100000, 999999).'.'.$suffix;
+                $request->file('profile')->move($path, $fileName);
+                $user -> profile = trim($path.'/'.$fileName,'.');
+            }else{
+                return back()->with('info','文件不是图片类型，请上传格式为jpg/jpeg/png/gif类型文件');
+            }    
+            
         }
         //执行插入
         if($user->save()) {
-            return redirect('/user/index')->with('info', '添加成功');
+            return redirect('/user')->with('info', '添加成功');
         }else{
             return back()->with('info', '添加失败');
         }
@@ -84,6 +95,7 @@ class UserController extends Controller
 
         //分配变量 解析模板
         return view('admin.user.index', ['users'=>$users,'request'=>$request]);// assign('users', $users); $this->display('index');
+
     }
 
     /**
@@ -136,6 +148,7 @@ class UserController extends Controller
         //读取用户的头像信息
         $profile = $user->profile;
         $path = '.'.$profile;
+        dd($path);
         if(file_exists($path)) {
             unlink($path);
         }

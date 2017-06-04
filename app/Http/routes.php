@@ -27,7 +27,7 @@ Route::get('/article/{id}.html', [
 Route::get('/articles', 'ArticleController@lists');
 
 //后台路由组
-Route::group(['middleware'=>'login'], function(){
+Route::group(['middleware'=>'login'], function(){//中间件控制
 	//后台路由规则
 	Route::get('/admin', 'AdminController@index');
 

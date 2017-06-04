@@ -35,7 +35,15 @@ class LoginController extends Controller
             return back();
         }
     }
-
+    //练习
+    //实例化用户对象
+       // $user=User::where('username',$request->username)->firstorFail();//获取用户信息
+       // if(Hash::check($requerst->password,$user->password)){
+       //       session(['uid']=>$user->id);
+       //       return redircet('admin')
+       // }else{
+       //       return back();
+       // }
     /**
      * 登出
      */
